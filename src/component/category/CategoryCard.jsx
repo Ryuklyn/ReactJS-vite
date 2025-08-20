@@ -7,22 +7,56 @@ const CategoryCard = ({ category, onDelete }) => {
   const percentage = ((spent / budget) * 100).toFixed(1);
 
   return (
-    <div className="bg-white p-5 rounded-xl shadow">
-      <div className="flex justify-between items-center mb-2">
-        <h3 className="text-lg font-semibold">{name}</h3>
-        <div className="flex gap-2">
-          <Edit2 className="w-5 h-5 text-gray-500 cursor-pointer" />
+    <div
+      style={{
+        background: "#fff",
+        padding: "20px",
+        borderRadius: "16px",
+        boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: "8px",
+        }}
+      >
+        <h3 style={{ fontSize: "18px", fontWeight: "600" }}>{name}</h3>
+        <div style={{ display: "flex", gap: "12px" }}>
+          <Edit2
+            style={{
+              width: "20px",
+              height: "20px",
+              color: "#6b7280",
+              cursor: "pointer",
+            }}
+          />
           <Trash2
-            className="w-5 h-5 text-red-500 cursor-pointer"
+            style={{
+              width: "20px",
+              height: "20px",
+              color: "#ef4444",
+              cursor: "pointer",
+            }}
             onClick={() => onDelete(name)}
           />
         </div>
       </div>
-      <p className="text-gray-600 mb-1">
+      <p style={{ color: "#4b5563", marginBottom: "6px", textAlign: "left" }}>
         ${spent} of ${budget}
       </p>
       <ProgressBar percentage={percentage} color={color} />
-      <p className="text-sm text-gray-500 mt-1">{percentage}%</p>
+      <p
+        style={{
+          fontSize: "14px",
+          color: "#6b7280",
+          marginTop: "8px",
+          textAlign: "right",
+        }}
+      >
+        {percentage}%
+      </p>
     </div>
   );
 };

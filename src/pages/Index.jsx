@@ -37,7 +37,12 @@ const Index = () => {
           <button className="btn btn-primary" onClick={gotoLogin}>
             Get Started
           </button>
-          <button className="btn btn-secondary">Sign Up Free</button>
+          <button
+            className="btn btn-secondary"
+            onClick={() => navigate("/signup")}
+          >
+            Sign Up Free
+          </button>
         </div>
 
         {/* Stats section */}

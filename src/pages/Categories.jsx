@@ -2,26 +2,40 @@ import AddCategoryForm from "../component/category/AddCategoryForm";
 import CategoryCard from "../component/category/CategoryCard";
 import CategoryHeader from "../component/category/CategoryHeader";
 import React, { useState } from "react";
+
 const Categories = () => {
   const [categories, setCategories] = useState([
-    { name: "Food", budget: 500, spent: 320, color: "bg-green-500" },
-    { name: "Transport", budget: 500, spent: 320, color: "bg-green-500" },
-    { name: "Housing", budget: 1200, spent: 1200, color: "bg-red-500" },
-    { name: "Shopping", budget: 300, spent: 150, color: "bg-green-400" },
+    { name: "Food", budget: 500, spent: 320, color: "#22c55e" },
+    { name: "Transport", budget: 200, spent: 180, color: "#facc15" },
+    { name: "Housing", budget: 1200, spent: 1200, color: "#ef4444" },
+    { name: "Shopping", budget: 300, spent: 150, color: "#22c55e" },
   ]);
 
   const addCategory = (newCategory) => {
-    setCategories([...categories, { ...newCategory, color: "bg-blue-400" }]);
+    setCategories([...categories, { ...newCategory, color: "#3b82f6" }]);
   };
+
   const deleteCategory = (name) => {
     setCategories(categories.filter((cat) => cat.name !== name));
   };
 
   return (
-    <div className="p-4 sm:p-8 bg-gray-50 min-h-screen">
+    <div
+      style={{
+        padding: "32px",
+        backgroundColor: "#f9fafb",
+        minHeight: "100vh",
+      }}
+    >
       <CategoryHeader />
       <AddCategoryForm onAdd={addCategory} />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+          gap: "24px",
+        }}
+      >
         {categories.map((cat, idx) => (
           <CategoryCard key={idx} category={cat} onDelete={deleteCategory} />
         ))}

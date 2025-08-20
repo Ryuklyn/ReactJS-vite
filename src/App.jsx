@@ -8,6 +8,9 @@ import Dashboard from "./pages/userlayout/Dashboard";
 import { UserLayout } from "./pages/userlayout/UserLayout";
 import Transaction from "./component/transaction/Transaction";
 import Categories from "./pages/Categories";
+import ToDoList from "./pages/ToDoList";
+import UserProfile from "./pages/UserProfile";
+import Notification from "./pages/Notification";
 
 function App() {
   return (
@@ -23,6 +26,9 @@ function App() {
           {/* <Route path="/user/dashboard" element={<Body />} /> */}
           <Route path="transaction" element={<Transaction />} />
           <Route path="/user/category" element={<Categories />} />
+          <Route path="todo" element={<ToDoList />} />
+          <Route path="profile" element={<UserProfile />} />
+          <Route path="notifications" element={<Notification />} />
         </Route>
       </Routes>
     </BrowserRouter>

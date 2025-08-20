@@ -36,7 +36,7 @@ const Login = () => {
       <div className="login-background-circle circle-3"></div>
 
       {/* Back button */}
-      <div className="back-button">
+      <div className="back-button" onClick={() => navigate("/prelogin")}>
         <svg
           width="20"
           height="20"

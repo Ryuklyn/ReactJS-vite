@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../css/signup.css";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,8 @@ const Signup = () => {
     agreeTerms: false,
     newsletter: false,
   });
+
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -29,6 +32,7 @@ const Signup = () => {
       alert("Passwords do not match!");
       return;
     }
+    navigate("/login");
     console.log("Signup form submitted:", formData);
   };
 
@@ -40,7 +44,7 @@ const Signup = () => {
       <div className="signup-background-circle circle-3"></div>
 
       {/* Back button */}
-      <div className="back-button">
+      <div className="back-button" onClick={() => navigate("/login")}>
         <svg
           width="20"
           height="20"
@@ -226,7 +230,7 @@ const Signup = () => {
               </label>
             </div>
 
-            <button type="submit" className="signup-btn">
+            <button type="submit" className="signup-btn" onClick={handleSubmit}>
               Create Account
             </button>
 

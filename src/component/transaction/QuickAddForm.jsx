@@ -19,7 +19,9 @@ const QuickAddForm = ({ onAdd }) => {
 
   return (
     <div className="border border-gray-300 rounded-lg p-6 mb-6 bg-white shadow-sm">
-      <h2 className="text-lg font-semibold mb-4">Quick Add Transactions</h2>
+      <h2 className="text-lg font-semibold mb-4 text-left pl-[8px]">
+        Quick Add Transactions
+      </h2>
 
       <div className="grid grid-cols-3 gap-4 mb-4">
         <input
