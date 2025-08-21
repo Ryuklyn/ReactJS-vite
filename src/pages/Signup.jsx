@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../css/signup.css";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+// import CryptoJS from "crypto-js";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    firstname: "",
+    lastname: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -26,14 +28,68 @@ const Signup = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const [responseData, setResponse] = useState([]);
+  const [submit, setSubmit] = useState(false);
+
+  useEffect(() => {
+    if (!submit) return;
+    const userSignup = async () => {
+      try {
+        const payload = {
+          firstname: formData.firstname,
+          lastname: formData.lastname,
+          email: formData.email,
+          password: formData.password, // only real field
+        };
+
+        const response = await axios.post(
+          "http://localhost:8080/api/users/signup",
+          payload
+        );
+        console.log("Fetched users:", response.data);
+        setResponse(response.data);
+        navigate("/login");
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+    userSignup();
+  }, [submit]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      alert("Please enter a valid email address!");
+      return;
+    }
+
+    // Password validation
+    if (formData.password.length < 8) {
+      alert("Password must be at least 8 characters long!");
+      return;
+    }
+    if (!/[A-Z]/.test(formData.password)) {
+      alert("Password must contain at least one uppercase letter!");
+      return;
+    }
+    if (!/[a-z]/.test(formData.password)) {
+      alert("Password must contain at least one lowercase letter!");
+      return;
+    }
+    if (!/[0-9]/.test(formData.password)) {
+      alert("Password must contain at least one number!");
+      return;
+    }
+    // Confirm password match
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
-    navigate("/login");
+
     console.log("Signup form submitted:", formData);
+    setSubmit(true); // trigger useEffect
   };
 
   return (
@@ -76,10 +132,10 @@ const Signup = () => {
                 <label className="form-label">First Name</label>
                 <input
                   type="text"
-                  name="firstName"
+                  name="firstname"
                   className="form-input"
                   placeholder="Enter first name"
-                  value={formData.firstName}
+                  value={formData.firstname}
                   onChange={handleChange}
                   required
                 />
@@ -89,10 +145,10 @@ const Signup = () => {
                 <label className="form-label">Last Name</label>
                 <input
                   type="text"
-                  name="lastName"
+                  name="lastname"
                   className="form-input"
                   placeholder="Enter last name"
-                  value={formData.lastName}
+                  value={formData.lastname}
                   onChange={handleChange}
                   required
                 />

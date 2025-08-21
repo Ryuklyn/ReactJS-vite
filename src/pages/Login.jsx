@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../css/login.css";
 import { NavLink, useNavigate } from "react-router-dom";
+import axios, { Axios } from "axios";
+import CryptoJS from "crypto-js"; // Import CryptoJS for encryption
+
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -20,14 +23,76 @@ const Login = () => {
     }));
   };
 
+  const [responseData, setResponse] = useState([]);
+  const [submit, setSubmit] = useState(false);
+
+  useEffect(() => {
+    if (!submit) return;
+
+    const userLogin = async () => {
+      try {
+        // Hash the password
+        // const hashedPassword = CryptoJS.SHA256(formData.password).toString();
+
+        const payload = {
+          ...formData,
+          // password: hashedPassword,
+          password: formData.password,
+        };
+        const response = await axios.post(
+          "http://localhost:8080/api/users/login",
+          payload
+        );
+
+        console.log("Fetched user:", response.data);
+        setResponse(response.data);
+
+        // 👉 Navigate after success
+        if (response.data) {
+          navigate("/user/dashboard", {
+            state: { firstname: response.data.firstname },
+          });
+          console.log(
+            "Navigating to dashboard with user:",
+            response.data.firstname
+          );
+        } else {
+          alert("Invalid credentials, please try again.");
+        }
+      } catch (error) {
+        console.error("Error logging in:", error);
+        alert("Login failed. Please check your credentials.");
+        navigate("/login");
+      } finally {
+        setSubmit(false); // reset submit flag
+      }
+    };
+
+    userLogin();
+  }, [submit]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // 👉 Validation before API call
+    if (!formData.email || !formData.password) {
+      alert("Please enter both email and password!");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      alert("Please enter a valid email address!");
+      return;
+    }
+
     console.log("Login form submitted:", formData);
+    setSubmit(true); // trigger useEffect
   };
 
-  function gotoUserDash() {
-    navigate("/user/dashboard");
-  }
+  // function gotoUserDash() {
+  //   setSubmit(true);
+  // }
   return (
     <div className="login-container">
       {/* Background circles */}
@@ -136,7 +201,7 @@ const Login = () => {
               </a>
             </div>
 
-            <button type="submit" className="login-btn" onClick={gotoUserDash}>
+            <button type="submit" className="login-btn" onClick={handleSubmit}>
               Sign In
             </button>
 
