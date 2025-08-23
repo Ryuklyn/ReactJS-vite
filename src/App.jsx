@@ -11,6 +11,7 @@ import Categories from "./pages/Categories";
 import ToDoList from "./pages/ToDoList";
 import UserProfile from "./pages/UserProfile";
 import Notification from "./pages/Notification";
+import AddTransaction from "./component/transaction/AddTransaction";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="todo" element={<ToDoList />} />
           <Route path="profile" element={<UserProfile />} />
           <Route path="notifications" element={<Notification />} />
+          <Route path="transaction/add" element={<AddTransaction />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -1,8 +1,12 @@
 import React from "react";
 import { Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Header = ({ userName = "<<<->>>", onAddTransaction }) => {
+  const navigate = useNavigate();
+
   const handleAddTransaction = () => {
+    navigate("/user/transaction/add");
     if (onAddTransaction) {
       onAddTransaction();
     } else {
