@@ -1,7 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TransactionItem from "./TransactionItem";
+import axios from "axios";
 
-const TransactionList = ({ transactions, onDelete }) => {
+const TransactionList = ({ onDelete }) => {
+  const [transactions, setTransactions] = useState([]);
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      const res = await axios.get(
+        "http://localhost:8080/api/transaction/getAll"
+      );
+      setTransactions(res.data);
+    };
+    fetchTransactions();
+  }, []);
+
+  const handleDelete = async (id) => {
+    await axios.delete(`http://localhost:8080/api/transaction/delete/${id}`);
+    setTransactions(transactions.filter((t) => t.id !== id));
+  };
   return (
     <div
       style={{

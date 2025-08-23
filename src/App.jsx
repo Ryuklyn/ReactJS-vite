@@ -26,11 +26,19 @@ function App() {
           <Route path="/user/dashboard" element={<Dashboard />} />
           {/* <Route path="/user/dashboard" element={<Body />} /> */}
           <Route path="transaction" element={<Transaction />} />
+          {/* Route for adding new transaction */}
+          <Route path="user/add-transaction" element={<AddTransaction />} />
+
+          {/* Route for editing existing transaction */}
+          <Route
+            path="/user/add-transaction/:id"
+            element={<AddTransaction />}
+          />
           <Route path="/user/category" element={<Categories />} />
-          <Route path="todo" element={<ToDoList />} />
-          <Route path="profile" element={<UserProfile />} />
-          <Route path="notifications" element={<Notification />} />
-          <Route path="transaction/add" element={<AddTransaction />} />
+          <Route path="/user/todo" element={<ToDoList />} />
+          <Route path="/user/profile" element={<UserProfile />} />
+          <Route path="/user/notifications" element={<Notification />} />
+          <Route path="/user/transaction/add" element={<AddTransaction />} />
         </Route>
       </Routes>
     </BrowserRouter>

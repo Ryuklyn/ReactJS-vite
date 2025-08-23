@@ -1,11 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Trash2, Edit } from "lucide-react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const TransactionItem = ({ transaction, onDelete }) => {
-  const [transactions, setTransactions] = useState([]);
+  // const [transactions, setTransactions] = useState([]);
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpense, setTotalExpense] = useState(0);
+
+  const navigate = useNavigate();
+
+  const handleEditClick = () => {
+    // Navigate to the AddTransaction component with the transaction ID
+    navigate(`/user/add-transaction/${transaction.id}`);
+    // or if your route is different:
+    // navigate(`/user/edit-transaction/${transaction.id}`);
+  };
 
   // Fetch transactions from backend
   useEffect(() => {
@@ -60,71 +70,62 @@ const TransactionItem = ({ transaction, onDelete }) => {
   };
 
   return (
-    <div>
-      {transactions.map((transaction) => (
-        <div
-          key={transaction.id}
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+        padding: "12px",
+        marginBottom: "12px",
+      }}
+    >
+      {/* Left side */}
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <p style={{ fontWeight: 500, margin: 0, textAlign: "left" }}>
+          {transaction.title}
+        </p>
+        <p
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            border: "1px solid #ddd",
-            borderRadius: "8px",
-            padding: "12px",
-            marginBottom: "12px",
+            fontSize: "14px",
+            color: "#6b7280",
+            margin: 0,
+            textAlign: "left",
           }}
         >
-          {/* Left side */}
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <p style={{ fontWeight: 500, margin: 0, textAlign: "left" }}>
-              {transaction.title}
-            </p>
-            <p
-              style={{
-                fontSize: "14px",
-                color: "#6b7280",
-                margin: 0,
-                textAlign: "left",
-              }}
-            >
-              {transaction.category} •{" "}
-              {formatRelativeTime(transaction.createdAt)}
-            </p>
-          </div>
+          {transaction.category} • {formatRelativeTime(transaction.createdAt)}
+        </p>
+      </div>
 
-          {/* Right side */}
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <p
-              style={{
-                fontWeight: 600,
-                margin: 0,
-                color:
-                  transaction.type.toLowerCase() === "income"
-                    ? "#22c55e"
-                    : "#ef4444",
-              }}
-            >
-              {transaction.type.toLowerCase() === "income" ? "+" : "-"}
-              {transaction.amount} Rs
-            </p>
+      {/* Right side */}
+      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <p
+          style={{
+            fontWeight: 600,
+            margin: 0,
+            color:
+              transaction.type.toLowerCase() === "income"
+                ? "#22c55e"
+                : "#ef4444",
+          }}
+        >
+          {transaction.type.toLowerCase() === "income" ? "+" : "-"}
+          {transaction.amount} Rs
+        </p>
 
-            <Edit
-              size={20}
-              style={{ cursor: "pointer", color: "#4b5563" }}
-              onMouseOver={(e) => (e.currentTarget.style.color = "#000")}
-              onMouseOut={(e) => (e.currentTarget.style.color = "#4b5563")}
-            />
+        <Edit
+          size={20}
+          style={{ cursor: "pointer", color: "#4b5563" }}
+          onClick={handleEditClick}
+        />
 
-            <Trash2
-              size={20}
-              style={{ cursor: "pointer", color: "#ef4444" }}
-              onMouseOver={(e) => (e.currentTarget.style.color = "#b91c1c")}
-              onMouseOut={(e) => (e.currentTarget.style.color = "#ef4444")}
-              onClick={() => handleDelete(transaction.id)}
-            />
-          </div>
-        </div>
-      ))}
+        <Trash2
+          size={20}
+          style={{ cursor: "pointer", color: "#ef4444" }}
+          onClick={() => onDelete(transaction.id)}
+        />
+      </div>
     </div>
   );
 };
