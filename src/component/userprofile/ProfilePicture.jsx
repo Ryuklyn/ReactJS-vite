@@ -1,55 +1,99 @@
 import React, { useRef } from "react";
-import DefaultAvatar from "../../image/default-avatar.png"; // adjust path as needed
+import { Camera } from "lucide-react";
 
-const ProfilePicture = ({ image, onUpdate }) => {
+const ProfilePicture = ({ image, name, onImageChange, isEditing }) => {
   const fileInputRef = useRef(null);
 
-  const handleImageChange = (e) => {
+  const getInitials = (name) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
+  };
+
+  const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
-      onUpdate("image", imageUrl);
+      onImageChange(imageUrl);
     }
   };
 
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-    >
-      <img
-        src={image || DefaultAvatar}
-        alt="Profile"
+    <div style={{ position: "relative" }}>
+      <div
         style={{
-          width: "120px",
-          height: "120px",
+          width: "160px",
+          height: "160px",
           borderRadius: "50%",
-          objectFit: "cover",
-          border: "2px solid #e5e7eb",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-        }}
-      />
-      <button
-        onClick={() => fileInputRef.current.click()}
-        style={{
-          marginTop: "12px",
-          padding: "6px 16px",
-          backgroundColor: "#3b82f6",
-          color: "white",
-          border: "none",
-          borderRadius: "9999px",
-          fontSize: "14px",
-          cursor: "pointer",
-          transition: "0.2s",
+          background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
+          padding: "5px",
         }}
       >
-        Change Photo
-      </button>
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            borderRadius: "50%",
+            backgroundColor: "#ffffff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "hidden",
+          }}
+        >
+          {image ? (
+            <img
+              src={image}
+              alt="Profile"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
+          ) : (
+            <span
+              style={{
+                fontSize: "40px",
+                fontWeight: "bold",
+                color: "#374151",
+              }}
+            >
+              {getInitials(name)}
+            </span>
+          )}
+        </div>
+      </div>
+      {isEditing && (
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          style={{
+            position: "absolute",
+            bottom: "12px",
+            right: "12px",
+            backgroundColor: "#2563eb",
+            color: "white",
+            padding: "10px",
+            borderRadius: "50%",
+            border: "none",
+            cursor: "pointer",
+            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+            transition: "all 0.2s",
+          }}
+          onMouseOver={(e) => (e.target.style.backgroundColor = "#1d4ed8")}
+          onMouseOut={(e) => (e.target.style.backgroundColor = "#2563eb")}
+        >
+          <Camera size={18} />
+        </button>
+      )}
       <input
         type="file"
         ref={fileInputRef}
         style={{ display: "none" }}
         accept="image/*"
-        onChange={handleImageChange}
+        onChange={handleImageUpload}
       />
     </div>
   );

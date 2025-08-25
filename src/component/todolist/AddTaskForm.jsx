@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const AddTaskForm = ({ onAddTask, onClose }) => {
   const navigate = useNavigate();
   const [taskText, setTaskText] = useState("");
   const [loading, setLoading] = useState(false);
+  // const [submit, setSubmit] = useState(false);
+
+  // const [formData, setFormData] = useState({
+  //   description: "",
+  //   status: "PENDING", // default status
+  // });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,17 +21,31 @@ const AddTaskForm = ({ onAddTask, onClose }) => {
       return;
     }
 
-    setLoading(true);
+    const payload = {
+      description: taskText.trim(),
+      status: "PENDING",
+      createdAt: new Date().toISOString().replace("Z", ""), // remove Z
+    };
+
+    console.log("Sending payload:", payload);
 
     try {
-      // Add the task
-      onAddTask(taskText.trim());
+      setLoading(true);
 
-      // Clear the form
+      const response = await axios.post(
+        "http://localhost:8080/api/todolist/create",
+        payload
+      );
+
+      console.log("Task created:", response.data);
+
+      if (onAddTask) {
+        onAddTask(response.data);
+      }
+
       setTaskText("");
-
-      // Navigate to user/todolist
-      navigate("/user/todo");
+      onClose();
+      // navigate("/user/todo");
     } catch (error) {
       console.error("Error adding task:", error);
       alert("Failed to add task. Please try again.");
@@ -32,6 +53,46 @@ const AddTaskForm = ({ onAddTask, onClose }) => {
       setLoading(false);
     }
   };
+
+  // 🔹 Save task to database when submit = true
+  // useEffect(() => {
+  //   if (!submit) return;
+
+  //   const handleTask = async () => {
+  //     console.log("Sending payload:", form); // 👀 check frontend data
+  //     try {
+  //       setLoading(true);
+
+  //       // Call backend API (adjust URL to match your Spring Boot endpoint)
+  //       const response = await axios.post(
+  //         "http://localhost:8080/api/todolist/create",
+  //         formData
+  //       );
+
+  //       console.log("Task created:", response.data);
+
+  //       // Update parent state if needed
+  //       if (onAddTask) {
+  //         onAddTask(response.data);
+  //       }
+
+  //       // Clear form
+  //       setTaskText("");
+  //       setFormData({ description: "", status: "PENDING" });
+
+  //       // Navigate back to task list
+  //       navigate("/user/todo");
+  //     } catch (error) {
+  //       console.error("Error adding task:", error);
+  //       alert("Failed to add task. Please try again.");
+  //     } finally {
+  //       setLoading(false);
+  //       setSubmit(false);
+  //     }
+  //   };
+
+  //   handleTask();
+  // }, [submit, formData, navigate, onAddTask]);
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -66,90 +127,40 @@ const AddTaskForm = ({ onAddTask, onClose }) => {
           margin: "16px",
         }}
       >
-        <div
+        <h2
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            fontSize: "20px",
+            fontWeight: "600",
+            color: "#111827",
             marginBottom: "20px",
           }}
         >
-          <h2
-            style={{
-              fontSize: "20px",
-              fontWeight: "600",
-              color: "#111827",
-              margin: 0,
-            }}
-          >
-            Add New Task
-          </h2>
-          <button
-            onClick={onClose}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: "24px",
-              cursor: "pointer",
-              color: "#6b7280",
-              padding: "0",
-              width: "30px",
-              height: "30px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: "50%",
-            }}
-            onMouseOver={(e) => (e.target.style.backgroundColor = "#f3f4f6")}
-            onMouseOut={(e) => (e.target.style.backgroundColor = "transparent")}
-          >
-            ×
-          </button>
-        </div>
+          Add New Task
+        </h2>
 
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: "20px" }}>
-            <label
-              htmlFor="taskText"
-              style={{
-                display: "block",
-                fontSize: "14px",
-                fontWeight: "500",
-                color: "#374151",
-                marginBottom: "8px",
-              }}
-            >
-              Task Description
-            </label>
-            <textarea
-              id="taskText"
-              value={taskText}
-              onChange={(e) => setTaskText(e.target.value)}
-              placeholder="Enter your task here..."
-              disabled={loading}
-              style={{
-                width: "100%",
-                minHeight: "100px",
-                padding: "12px",
-                border: "1px solid #d1d5db",
-                borderRadius: "8px",
-                fontSize: "14px",
-                outline: "none",
-                resize: "vertical",
-                fontFamily: "inherit",
-                backgroundColor: loading ? "#f9fafb" : "white",
-              }}
-              onFocus={(e) => (e.target.style.borderColor = "#10b981")}
-              onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
-            />
-          </div>
+          <textarea
+            value={taskText}
+            onChange={(e) => setTaskText(e.target.value)}
+            placeholder="Enter your task here..."
+            disabled={loading}
+            style={{
+              width: "100%",
+              minHeight: "100px",
+              padding: "12px",
+              border: "1px solid #d1d5db",
+              borderRadius: "8px",
+              fontSize: "14px",
+              outline: "none",
+              resize: "vertical",
+              fontFamily: "inherit",
+              backgroundColor: loading ? "#f9fafb" : "white",
+              marginBottom: "20px",
+            }}
+          />
 
           <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              gap: "12px",
-            }}
+            style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}
           >
             <button
               type="button"
@@ -163,8 +174,6 @@ const AddTaskForm = ({ onAddTask, onClose }) => {
                 borderRadius: "8px",
                 fontSize: "14px",
                 fontWeight: "500",
-                cursor: loading ? "not-allowed" : "pointer",
-                opacity: loading ? 0.6 : 1,
               }}
             >
               Cancel
@@ -181,8 +190,6 @@ const AddTaskForm = ({ onAddTask, onClose }) => {
                 borderRadius: "8px",
                 fontSize: "14px",
                 fontWeight: "500",
-                cursor: loading || !taskText.trim() ? "not-allowed" : "pointer",
-                opacity: loading || !taskText.trim() ? 0.6 : 1,
               }}
             >
               {loading ? "Adding..." : "Add Task"}
